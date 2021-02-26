@@ -1,0 +1,39 @@
+var express = require('express');
+var router = express.Router();
+
+const response = require('../utils/response');
+var controller = require('./controller');
+
+handle_response = (err, res, data) => {
+    err ? response.send_error_json(res, err) : response.send_response_json(res, data);
+};
+
+router
+.get('/authendicate', function (req, res){
+    controller.authendicate(req, res, (err, data) => {
+        handle_response(err, res, data);
+    });
+});
+
+router
+.get('/get_details/:id', function (req, res){
+    controller.getUserDetails(req, res, (err, data) => {
+        handle_response(err, res, data);
+    });
+});
+
+router
+.post('/create_user', function (req, res) {
+    controller.createUser(req, res, (err, data) => {
+        handle_response(err, res, data);
+    });
+});
+
+router
+.post('/:id/create_user_details', function (req, res) {
+    controller.createUserdetails(req, res, (err, data) => {
+        handle_response(err, res, data);
+    });
+});
+
+module.exports = router;

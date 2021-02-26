@@ -1,0 +1,8 @@
+{
+    "user":"postgres",
+    "host":"localhost",
+    "database":"profile",
+    "password":"",
+    "port":5432,
+    "secret":"profile_app"
+ }
