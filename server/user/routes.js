@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+const multer = require('multer');
+const upload = multer();
 
 const response = require('../utils/response');
 var controller = require('./controller');
@@ -23,14 +25,14 @@ router
 });
 
 router
-.post('/create_user', function (req, res) {
+.post('/create_user', upload.none(), function (req, res) {
     controller.createUser(req, res, (err, data) => {
         handle_response(err, res, data);
     });
 });
 
 router
-.post('/:id/create_user_details', function (req, res) {
+.post('/:id/create_user_details', upload.single('avatar'), function (req, res) {
     controller.createUserdetails(req, res, (err, data) => {
         handle_response(err, res, data);
     });

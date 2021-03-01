@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const userClass  = require('./models');
 const { secret } = require('../../config/config.json');
-const { result } = require('underscore');
 
 function removeSensitiveInfo(data) {
     if (data.dataValues){
@@ -38,19 +37,20 @@ module.exports = function() {
         userClass.userModel
         .findOne({
             where: {
-                [Op.or]:[{username: req.body.username}, {email: req.body.email}]
+                [Op.or]:[{username: req.body.username}, {email: req.body.username}]
             }
         })
         .then((result) => {
-            bcrypt.compare(req.body.password, result.password, (err, validPassword) => {
-                if (validPassword) {
-                    result.dataValues.token = jwt.sign({ sub: result.id }, secret, { expiresIn: '3h' });
-                    removeSensitiveInfo(result);
-                    callback(null, result);
-                } else {
-                    callback('Username or password mismatched!');
-                }
-            });
+            if (result) {
+                bcrypt.compare(req.body.password, result.password, (err, validPassword) => {
+                    if (validPassword) {
+                        result.dataValues.token = jwt.sign({ sub: result.id }, secret, { expiresIn: '3h' });
+                        removeSensitiveInfo(result);
+                        callback(null, result);
+                    }
+                });
+            }
+            callback('Username or password mismatched!');
         })
         .catch((err) => {
             callback(err)
@@ -63,6 +63,9 @@ module.exports = function() {
         const userDetail = new userClass.userDetailModel(req.body);
 
         userDetail.userId = req.params.id;
+        userDetail.imageType = req.file.mimetype;
+        userDetail.imageName = req.file.originalname;
+        userDetail.imageData = req.file.buffer;
         userDetail.save().then((result) => {
             if(result){
                 callback(null, result);

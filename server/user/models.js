@@ -35,12 +35,15 @@ const UserDetails = sequelize.define('user_details', {
         autoIncrement: true,
         primaryKey: true
     },
-    jobTitle: { type: DataTypes.STRING },
-    salary: { type: DataTypes.INTEGER },
-    doj: { type: DataTypes.DATE },
-    education: { type: DataTypes.STRING },
-    dob: { type: DataTypes.DATE, },
-    city: { type: DataTypes.STRING },
+    imageType: DataTypes.STRING,
+    imageName: DataTypes.STRING,
+    imageData: DataTypes.BLOB('long'),
+    jobTitle: DataTypes.STRING,
+    salary: DataTypes.INTEGER,
+    doj: DataTypes.DATE,
+    education: DataTypes.STRING,
+    dob: DataTypes.DATE,
+    city: DataTypes.STRING,
 });
 UserDetails.belongsTo(User);
 
