@@ -1,0 +1,21 @@
+.user_panel {
+    padding: 15px;
+    border-radius: 10px;
+    background-color: lightgrey;
+    text-align: left;
+
+    .avatar {
+        img { 
+            width: 70px;
+            border-radius: 100%;
+            margin-right: 10px;
+        }
+        display: flex;
+        align-items: center;
+        padding-bottom: 10px;
+    }
+
+    .user_details {
+        span {color: gray;}
+    }
+}

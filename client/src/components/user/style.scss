@@ -1,0 +1,16 @@
+.login, .register {
+    background-color: lightgray;
+    padding: 50px;
+    border-radius: 10px;
+    input {
+        width: 100%;
+        padding: 5px 10px;
+        margin: 10px 0;
+        outline: none;
+        border: 1px solid lightgrey;
+        border-radius: 10px;
+    }
+    .button {
+        background-color: rgb(121, 121, 230);
+    }
+}
