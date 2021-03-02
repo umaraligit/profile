@@ -37,10 +37,8 @@ app.use(function (req, res, next) {
   }
 });
 
-// app.use(favicon(path.join(__dirname, '_server/assets', 'favicon.ico')));
 app.use(bodyParser.urlencoded({ extended: false }));		// req.body URL Encoded
 app.use(bodyParser.json());									// req.body JSON
-// app.use(cookieParser());									// Cookie reader 	=> req.cookies.CookieName
 
 app.use(jwt());
 

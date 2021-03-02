@@ -11,15 +11,15 @@ handle_response = (err, res, data) => {
 };
 
 router
-.get('/authendicate', function (req, res){
-    controller.authendicate(req, res, (err, data) => {
+.get('/get_details/:id', function (req, res){
+    controller.getUserDetails(req, res, (err, data) => {
         handle_response(err, res, data);
     });
 });
 
 router
-.get('/get_details/:id', function (req, res){
-    controller.getUserDetails(req, res, (err, data) => {
+.post('/authendicate', upload.none(), function (req, res){
+    controller.authendicate(req, res, (err, data) => {
         handle_response(err, res, data);
     });
 });

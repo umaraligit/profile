@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
+const _ = require('underscore');
 
 const userClass  = require('./models');
 const { secret } = require('../../config/config.json');
@@ -17,15 +18,17 @@ module.exports = function() {
     _self.createUser = (req, res, callback) => {
         console.log('Creating user');
 
-        var data = req.body
+        var data = req.body.data || req.body;
         let user = new userClass.userModel(data);
         bcrypt.hash(data.password, 12, (err, hash) => {
             if (err) callback(err);
             user.password = hash
             user.save()
             .then((result) => {
-                removeSensitiveInfo(result)
-                callback(null, result);
+                if(!_.isEmpty(result)) {
+                    removeSensitiveInfo(result);
+                    callback(null, result);
+                } else { callback('Cannot create new record') }
             })
             .catch((err) => {callback(err)})
         });
@@ -34,23 +37,27 @@ module.exports = function() {
     _self.authendicate = (req, res, callback) => {
         console.log('Validating User');
 
+        params = req.body.data || req.body;
+
         userClass.userModel
         .findOne({
             where: {
-                [Op.or]:[{username: req.body.username}, {email: req.body.username}]
+                [Op.or]:[{username: params.username}, {email: params.username}]
             }
         })
         .then((result) => {
-            if (result) {
-                bcrypt.compare(req.body.password, result.password, (err, validPassword) => {
+            if(!_.isEmpty(result)) {
+                bcrypt.compare(params.password, result.password, (err, validPassword) => {
+                    console.log(validPassword)
                     if (validPassword) {
                         result.dataValues.token = jwt.sign({ sub: result.id }, secret, { expiresIn: '3h' });
                         removeSensitiveInfo(result);
                         callback(null, result);
-                    }
+                    } else { callback('Password Missmatched') }
                 });
+            } else {
+                callback('Username or password mismatched!');
             }
-            callback('Username or password mismatched!');
         })
         .catch((err) => {
             callback(err)
@@ -60,16 +67,20 @@ module.exports = function() {
     _self.createUserdetails = (req, res, callback) => {
         console.log('Creating user details');
 
-        const userDetail = new userClass.userDetailModel(req.body);
+        data = req.body.data || req.body;
+
+        const userDetail = new userClass.userDetailModel(data);
 
         userDetail.userId = req.params.id;
         userDetail.imageType = req.file.mimetype;
         userDetail.imageName = req.file.originalname;
         userDetail.imageData = req.file.buffer;
         userDetail.save().then((result) => {
-            if(result){
+            if(!_.isEmpty(result)){
+                const image = result.imageData.toString('base64');
+                result['imageData'] = image
                 callback(null, result);
-            }
+            } else { callback('Cannot create new record') }
         }).catch((err) => {callback(err)})
     };
 
@@ -79,10 +90,12 @@ module.exports = function() {
         userClass.userDetailModel
         .findOne({where: {userId: req.params.id}})
         .then((result) => {
-            if (result) {
+            if(!_.isEmpty(result)) {
+                const image = result.imageData.toString('base64');
+                result['imageData'] = image
                 removeSensitiveInfo(result);
                 callback(null, result);
-            };
+            } else { callback('Result Not Found') }
         })
         .catch((err) => {
             callback(err);
