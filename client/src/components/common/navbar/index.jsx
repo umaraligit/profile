@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import './index.scss';
+import '../style.scss';
 
 const Navbar = () => {
     return (
@@ -16,7 +16,7 @@ const Navbar = () => {
                         <NavLink to="/register" activeClassName="active">register</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink to="/" activeClassName="active">login</NavLink>
+                        <NavLink to="/login" activeClassName="active">login</NavLink>
                     </li>
                     <li className="nav-item">
                         <NavLink to="/enter_details" activeClassName="active">Enter Details</NavLink>

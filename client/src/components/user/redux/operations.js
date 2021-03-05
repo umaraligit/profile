@@ -1,22 +1,18 @@
 import ApiAxiosService from '../../../utils/ApiAxios';
-import { setAuth, setUser, setUserDetails } from './actions';
+import { clear, setAuth, setError, setUser, setUserDetails } from './actions';
 
 export const authendicate = (data) => (dispatch) => {
     ApiAxiosService
-    .post('/user/authendicate', {data})
-    .then((res) => {
-        dispatch(setAuth(res.data));
-    })
-    .catch(err => console.log('Error: ', err));
+    .post('/user/authendicate', {data}, )
+    .then((res) => dispatch(setAuth(res.data)))
+    .catch(err => dispatch(setError(err)));
 };
 
 export const registerUser = (data) => (dispatch) => {
     ApiAxiosService
     .post('user/create_user', {data})
-    .then((res) => {
-        dispatch(setUser(res.data));
-    })
-    .catch(err => console.log('Error: ', err));
+    .then((res) => dispatch(setUser(res.data)))
+    .catch(err => dispatch(setError(err)));
 }
 
 export const registerUserDetails = (user, data) => (dispatch) => {
@@ -28,5 +24,9 @@ export const registerUserDetails = (user, data) => (dispatch) => {
     .then((res) => {
         dispatch(setUserDetails(res.data));
     })
-    .catch(err => console.log('Error: ', err));
+    .catch(err => dispatch(setError(err)));
+}
+
+export const clearError = () => (dispatch) => {
+    dispatch(clear())
 }

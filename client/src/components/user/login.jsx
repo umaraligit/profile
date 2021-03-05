@@ -1,8 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import _ from 'underscore';
+import { Alert } from 'react-bootstrap';
 
-import { authendicate } from './redux/operations';
+import { authendicate, clearError } from './redux/operations';
 
 import './style.scss';
 
@@ -35,22 +36,29 @@ class User extends React.Component {
         this.props.authendicate(data);
     }
 
+    handleClose = () => {
+        this.props.clearError()
+    }
+
     componentDidUpdate() {
         const { history, user_data } = this.props;
         if(!_.isEmpty(user_data)) {
             if(user_data.status === 'OK') {
                 history.push('/dashboard')
-            } else {
-                alert(user_data.status, user_data.response);
             }
         }
     }
 
     render() {
+        const { error } = this.props;
         return(
             <div className="container-fluid">
                 <div className="row justify-content-center">
                 <div className="login col-4">
+                { (!_.isEmpty(error.message)) 
+                ? <Alert variant="danger" onClose={this.handleClose} dismissible>
+                    <p>{error.message}</p>
+                  </Alert>: <></>}
                     <form>
                         <h4>Please Login to continue..</h4>
                         <input type="text" name="username" onBlur={this.handleChange} placeholder="Username" autoFocus autoComplete="off"/>
@@ -65,9 +73,11 @@ class User extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    user_data: state.auth.user_data
+    user_data: state.auth.user_data,
+    error: state.auth.user_error
 })
 
 export default connect(mapStateToProps, {
-    authendicate
+    authendicate,
+    clearError
 })(User);

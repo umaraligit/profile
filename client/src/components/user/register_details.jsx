@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import _ from 'underscore';
 
-import { registerUserDetails } from './redux/operations';
+import { registerUserDetails, clearError } from './redux/operations';
 
 class RegisterDetails extends React.Component {
     constructor(props) {
@@ -39,6 +39,10 @@ class RegisterDetails extends React.Component {
         this.props.registerUserDetails(user_data.response, formData);
     }
 
+    handleClose = () => {
+        this.props.clearError()
+    }
+
     componentDidMount() {
         const { user_data, user_details, history } = this.props;
         if(_.isEmpty(user_data)) {
@@ -50,10 +54,15 @@ class RegisterDetails extends React.Component {
     }
 
     render() {
+        const { error } = this.props;
         return(
             <div className="container-fluid">
                 <div className="row justify-content-center">
                 <div className="register col-4">
+                { (!_.isEmpty(error.message)) 
+                ? <Alert variant="danger" onClose={this.handleClose} dismissible>
+                    <p>{error.message}</p>
+                  </Alert>: <></>}
                     <form id='user_form'>
                         <h4>Enter User Details.</h4>
                         <input type="text" name="jobTitle" onChange={this.handleChange} placeholder="Job Title" autoFocus autoComplete="off"/>
@@ -74,10 +83,12 @@ class RegisterDetails extends React.Component {
 
 const mapStateToProps = state => ({
     user_data: state.auth.user_data,
-    user_details: state.auth.registerUserDetails
+    user_details: state.auth.registerUserDetails,
+    error: state.auth.user_error
 })
 
 export default connect(mapStateToProps, {
-    registerUserDetails
+    registerUserDetails,
+    clearError
 })(RegisterDetails);
 

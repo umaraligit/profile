@@ -1,9 +1,10 @@
-import { AUTHENDICATE, REGISTER_USER, REGISTER_USER_DETAILS } from './actions';
+import { AUTHENDICATE, REGISTER_USER, REGISTER_USER_DETAILS, USER_ERROR, CLEAR } from './actions';
 
 const initialState = {
     user_data: {},
     registerUser: {},
-    registerUserDetails: {}
+    registerUserDetails: {},
+    user_error: {}
 };
 
 export default function reducer(state = initialState, {type, payload}) {
@@ -22,6 +23,15 @@ export default function reducer(state = initialState, {type, payload}) {
             return {
                 ...state,
                 registerUserDetails: payload
+            }
+        case USER_ERROR:
+            return {
+                ...state,
+                user_error: payload
+            }
+        case CLEAR:
+            return {
+                user_error: {}
             }
         default:
             return state;

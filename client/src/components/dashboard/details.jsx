@@ -2,14 +2,9 @@ import _ from 'underscore';
 import moment from 'moment';
 
 export const userDetails = (user_data, user_details) => {
-    const isValid = !_.isEmpty(user_details);
-    var imageSrc = '';
-    var date = '';
-    if (isValid) {
-        imageSrc = 'data:' + user_details.response.imageType + ';base64, '+ user_details.response.imageData;
-        date = moment(user_details.response.doj).format('MMMM Do YYYY');
-    }
-    if(isValid) {
+    if(!_.isEmpty(user_details)) {
+        const imageSrc = 'data:' + user_details.response.imageType + ';base64, '+ user_details.response.imageData;
+        const date = moment(user_details.response.doj).format('MMMM Do YYYY');
         return(
             <div className='user_panel col-sm-3'> 
                 <div className='avatar'>

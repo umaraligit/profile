@@ -2,7 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import _ from 'underscore';
 
-import { registerUser } from './redux/operations';
+import { registerUser, clearError } from './redux/operations';
 
 class Register extends React.Component {
     constructor(props) {
@@ -58,6 +58,10 @@ class Register extends React.Component {
         }
     }
 
+    handleClose = () => {
+        this.props.clearError()
+    }
+
     componentDidUpdate() {
         const { history, user_data } = this.props;
         if(!_.isEmpty(user_data)) {
@@ -66,10 +70,15 @@ class Register extends React.Component {
     }
 
     render() {
+        const { error } = this.props;
         return(
             <div className="container-fluid">
                 <div className="row justify-content-center">
                 <div className="register col-4">
+                { (!_.isEmpty(error.message)) 
+                ? <Alert variant="danger" onClose={this.handleClose} dismissible>
+                    <p>{error.message}</p>
+                  </Alert>: <></>}
                     <form>
                         <h4>Register.</h4>
                         <input type="text" name="username" onChange={this.handleChange} placeholder="Username" autoFocus autoComplete="off"/>
@@ -86,10 +95,12 @@ class Register extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    user_data: state.auth.registerUser
+    user_data: state.auth.registerUser,
+    error: state.auth.user_error
 })
 
 export default connect(mapStateToProps, {
-    registerUser
+    registerUser,
+    clearError
 })(Register);
 

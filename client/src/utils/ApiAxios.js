@@ -21,7 +21,6 @@ export default class ApiAxiosService {
 
     // Axios Post Method
     static post(url, data, headers) {
-        console.log(url, data, headers);
         return apiAxios
         .post(url, data, headers)
         .then((res) => {
